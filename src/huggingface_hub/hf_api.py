@@ -14856,8 +14856,10 @@ class HfApi:
             "POST", f"{self.endpoint}/api/buckets/{bucket_id}/batch", headers=headers, content=data
         )
         # The endpoint reports failed operations in the response body, on a 200 as well as on a 422, so inspect the
-        # body first and let `hf_raise_for_status` handle the other error statuses.
-        _raise_on_bucket_batch_failures(response, bucket_id=bucket_id, sent=len(operations))
+        # body first for those two statuses and let `hf_raise_for_status` handle every other one: an error response
+        # that happens to carry a batch-shaped body must still reach its specialised exception (BucketNotFoundError...).
+        if response.status_code in (200, 422):
+            _raise_on_bucket_batch_failures(response, bucket_id=bucket_id, sent=len(operations))
         hf_raise_for_status(response)
 
     @validate_hf_hub_args
