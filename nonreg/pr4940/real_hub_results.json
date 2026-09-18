@@ -1,0 +1,150 @@
+[
+  {
+    "label": "add 3 files (must SUCCEED - false positive check)",
+    "sdk": "ok",
+    "calls": [
+      {
+        "status": 200,
+        "raw": "{\"success\":true,\"processed\":3,\"succeeded\":3,\"failed\":[]}",
+        "parsed": {
+          "success": true,
+          "processed": 3,
+          "succeeded": 3,
+          "failed": []
+        },
+        "sent_ops": 3
+      }
+    ]
+  },
+  {
+    "label": "delete 1 existing file (must SUCCEED)",
+    "sdk": "ok",
+    "calls": [
+      {
+        "status": 200,
+        "raw": "{\"success\":true,\"processed\":1,\"succeeded\":1,\"failed\":[]}",
+        "parsed": {
+          "success": true,
+          "processed": 1,
+          "succeeded": 1,
+          "failed": []
+        },
+        "sent_ops": 1
+      }
+    ]
+  },
+  {
+    "label": "delete 1 MISSING file (regression risk: did this silently pass before?)",
+    "sdk": "ok",
+    "calls": [
+      {
+        "status": 200,
+        "raw": "{\"success\":true,\"processed\":1,\"succeeded\":1,\"failed\":[]}",
+        "parsed": {
+          "success": true,
+          "processed": 1,
+          "succeeded": 1,
+          "failed": []
+        },
+        "sent_ops": 1
+      }
+    ]
+  },
+  {
+    "label": "delete existing + missing in one batch",
+    "sdk": "ok",
+    "calls": [
+      {
+        "status": 200,
+        "raw": "{\"success\":true,\"processed\":2,\"succeeded\":2,\"failed\":[]}",
+        "parsed": {
+          "success": true,
+          "processed": 2,
+          "succeeded": 2,
+          "failed": []
+        },
+        "sent_ops": 2
+      }
+    ]
+  },
+  {
+    "label": "overwrite an existing path (must SUCCEED)",
+    "sdk": "ok",
+    "calls": [
+      {
+        "status": 200,
+        "raw": "{\"success\":true,\"processed\":1,\"succeeded\":1,\"failed\":[]}",
+        "parsed": {
+          "success": true,
+          "processed": 1,
+          "succeeded": 1,
+          "failed": []
+        },
+        "sent_ops": 1
+      }
+    ]
+  },
+  {
+    "label": "copy with a bogus xet hash (should FAIL)",
+    "sdk": "BucketBatchError",
+    "message": "Failed to apply 1 out of 1 operation(s) on bucket 'glutamatt/nonreg-batch-1789743187':\n  - copied.txt: Failed to duplicate file from source repository: file not found in source repo",
+    "failures": [
+      {
+        "path": "copied.txt",
+        "error": "Failed to duplicate file from source repository: file not found in source repo"
+      }
+    ],
+    "calls": [
+      {
+        "status": 422,
+        "raw": "{\"success\":false,\"processed\":1,\"succeeded\":0,\"failed\":[{\"path\":\"copied.txt\",\"error\":\"Failed to duplicate file from source repository: file not found in source repo\"}]}",
+        "parsed": {
+          "success": false,
+          "processed": 1,
+          "succeeded": 0,
+          "failed": [
+            {
+              "path": "copied.txt",
+              "error": "Failed to duplicate file from source repository: file not found in source repo"
+            }
+          ]
+        },
+        "sent_ops": 1
+      }
+    ]
+  },
+  {
+    "label": "add 25 files (counter shape on a bigger batch)",
+    "sdk": "ok",
+    "calls": [
+      {
+        "status": 200,
+        "raw": "{\"success\":true,\"processed\":25,\"succeeded\":25,\"failed\":[]}",
+        "parsed": {
+          "success": true,
+          "processed": 25,
+          "succeeded": 25,
+          "failed": []
+        },
+        "sent_ops": 25
+      }
+    ]
+  },
+  {
+    "label": "delete a path with traversal-ish characters (should FAIL or no-op)",
+    "sdk": "ok",
+    "calls": [
+      {
+        "status": 200,
+        "raw": "{\"success\":true,\"processed\":1,\"succeeded\":1,\"failed\":[]}",
+        "parsed": {
+          "success": true,
+          "processed": 1,
+          "succeeded": 1,
+          "failed": []
+        },
+        "sent_ops": 1
+      }
+    ]
+  }
+]
